@@ -2,93 +2,71 @@
 
 The Cypherpath API SDK makes it easier to write scripts and programs utilizing SDI OS's RESTful API.
 
-## Getting Started
+## Development
 
-These instructions have been tested to work against Ubuntu 16.04, 18.04, and Windows 10. Installing on another OS may require some extra research and trial and error. If you have any problems, and there doesn't seem to be any hints with searching for an answer, feel free to submit an issue.
+### Pre-requisites
+Docker is the the endorsed, cross-platform approach to ensure a uniform
+development experience.  Install Git, Docker, and Docker Compose for your
+operating system of choice.  If you use Windows, consider using a VM or the
+Windows Subsystem for Linux.
 
-### Ubuntu 16.04 / 18.04
+   - [Install Docker on CentOS](
+       https://docs.docker.com/install/linux/docker-ce/centos/
+     )
+   - [Install Docker on Debian](
+       https://docs.docker.com/install/linux/docker-ce/debian/
+     )
+   - [Install Docker on Fedora](
+       https://docs.docker.com/install/linux/docker-ce/fedora/
+     )
+   - [Install Docker on Ubuntu](
+       https://docs.docker.com/install/linux/docker-ce/ubuntu/
+     )
 
-#### Pre-requisites
-Use apt to install the following packages.
+   In all cases, make sure you run the post-installation steps to give your
+   unprivileged user access:
 
-```
-git
-python3
-python3-pip
-python3-venv
-```
+   - [Docker Post-Installation](
+       https://docs.docker.com/install/linux/linux-postinstall/
+     )
 
-You can run the following line to install all needed packages
+   Then install docker-compose:
 
-```bash
-sudo apt-get install git python3 python3-pip python3-venv
-```
+   - [Install Docker Compose](
+       https://docs.docker.com/compose/install/
+   )
+
+   **_Restart your operating system now._**
+
+### Getting Started
 
 #### Install
 
-Clone this repository to your local machine or unzip/extract the project.
-
-Here's what to run to clone the project:
+Clone this repository to your local machine:
 
 ```bash
-git clone https://github.com/cypherpath/sdios-api-sdk.git
+$ git clone https://github.com/hyperqube/sdios-api-sdk.git sdios
 ```
 
-#### Python virtual environment
-
-To keep python packages nice and clean, it is recommended to create a python virtual environment. This is really simple to do and prevents python package bloat on your system.
-
-This step is optional and you can skip this step to install python packaged into your machine.
-
-Create an empty directory in the root directory of the project:
+Now `cd` into the sdios directory and setup your env:
 
 ```bash
-cd sdios-api-sdk/
-mkdir venv
+$ cd sdios
+$ cp example.env .env
+$ vi .env  # or editor of your choice, just setup the env vars
 ```
 
-Create the virtual environment:
+Now, either run the python interpreter in the container context:
 
 ```bash
-python3 -m venv venv/
+$ docker-compose run --rm sdios
 ```
-
-Activate the virtual environment:
-
-```bash
-source venv/bin/activate
-```
-
-You're done! You are now in a python virtual environment. You will need to activate the virtual environment every time you open a shell. To get out of the virtual environment you'll need to run `deactivate`.
-
-#### Install python packages
-
-Run the following command to install all required python packages.
-
-___
-**_Note:_** If you are not in a python virtual environment explained above, you might need to run the following command as root: `sudo python3-pip install -r requirements.txt`
-___
+or run a python script in the `src` directory or deeper in same context via
+the bind mount provided in the compose file, e.g. if you had a `test.py` file
+in `src` directory you could:
 
 ```bash
-pip install -r requirements.txt
-```
-
-#### Set PYTHONPATH environment variable
-
-In order for any python scripts to find the project, the path to the directory will need to be added to the PYTHONPATH environment variable.
-
-While in the root of the projects directory, run the following command.
-
-```bash
-export PYTHONPATH="$PYTHONPATH:$PWD"
-```
-
-Setting this will be temporary as long as the shell is open. Upon opening a new shell, this will need to be re-run.
-
-To keep your PYTHONPATH persistent, you'll need to add it to your shell's RC file or profile file. For example, if your shell is bash, you can add the following line to `~/.bashrc` or `~/.bash_profile`.
-
-```bash
-PYTHONPATH="$PYTHONPATH:/home/user/path-to-root-of-project/"
+$ docker-compose run --rm sdios python test.py
 ```
 
 ### Windows 10 (Classic install)
@@ -193,10 +171,10 @@ The next code snippet will accomplish the following in the interactive shell:
 This example assumes you are using the current API version `2.1.0`. I'll be using a test `admin` account with the following test credentials. **Do not use** these credentials as they are for **demonstration purposes only!** Using simple account names and easy passwords is a **serious security risk!** Only do so temporarily in a safe segregated network on a test deployment!
 
 ```bash
->>> from api.driver import APIDriver
->>> from api.accounts import UserDriver
->>> from api.storage import DiskDriver
->>> from api.sdis import SDIDriver, MachineDriver, NetworkDriver
+>>> from sdios.api.driver import APIDriver
+>>> from sdios.api.accounts import UserDriver
+>>> from sdios.api.storage import DiskDriver
+>>> from sdios.api.sdis import SDIDriver, MachineDriver, NetworkDriver
 >>>
 >>> api_driver = APIDriver(domain="192.168.1.101", credentials={"username": "admin", "password": "admin", "client_id": "adminid", "client_secret":"adminsecret"}, api_version="2.1.0")
 >>> user_driver = UserDriver(api_driver)
@@ -361,10 +339,10 @@ The same commands from the previous example can be used in a python script. The 
 
 ```python
 #!/usr/bin/env python3
-from api.driver import APIDriver
-from api.accounts import UserDriver
-from api.storage import DiskDriver
-from api.sdis import SDIDriver, MachineDriver, NetworkDriver
+from sdios.api.driver import APIDriver
+from sdios.api.accounts import UserDriver
+from sdios.api.storage import DiskDriver
+from sdios.api.sdis import SDIDriver, MachineDriver, NetworkDriver
 
 def main():
     domain = "192.168.1.101"

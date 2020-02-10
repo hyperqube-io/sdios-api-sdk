@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:
+  sdios:
+    image: sdios:latest
+    build:
+      context: .
+    volumes:
+      - ./src:/app/src:z
+    user: ${UID:-0}
+    environment:
+      CYPHERPATH_DOMAIN:
+      CYPHERPATH_CLIENT_ID:
+      CYPHERPATH_CLIENT_SECRET:
+      CYPHERPATH_USERNAME:
+      CYPHERPATH_PASSWORD:
